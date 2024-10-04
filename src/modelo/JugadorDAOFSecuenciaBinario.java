@@ -105,24 +105,27 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
             if (!(listaJugadores.contains(nuevo))) {
                 return "El jugador que se intenta modificar no existe";
             } else {
+                List<Jugador> jugadoresFiltrados = new ArrayList<>();
                 try {
                     List<String> fileContent = new ArrayList<>();
-                    try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+                    try (DataInputStream dis = new DataInputStream(new FileInputStream(archivo))) {
                         String linea;
-                        while ((linea = reader.readLine()) != null) {
-                            String[] datos = linea.split(",");
-                            int idJugadorExistente = Integer.parseInt(datos[0]);
+                        while (dis.available() > 0) {
+                            int idJugador = dis.readInt();
+                            int nivelExperencia = dis.readInt();
+                            int vidaJugador = dis.readInt();
+                            int monedas = dis.readInt();
+                            String nick = dis.readUTF();
 
-                            if (idJugadorExistente != nuevo.getIdJugador()) {
-                                fileContent.add(linea);
+                            if (idJugador != nuevo.getIdJugador()) {
+                                jugadoresFiltrados.add(new Jugador(idJugador, nivelExperencia, vidaJugador, monedas, nick));
                             }else{
-                                String lineaNueva;
-                                lineaNueva =  idJugadorExistente + "," + nuevo.getNivelExperencia() + "," + nuevo.getVidaJugador() + "," + nuevo.getMonedas() + "," + nuevo.getNick();
-                                fileContent.add(lineaNueva);
+                            String lineaNueva;
+                            lineaNueva = nuevo.getIdJugador() + "," + nuevo.getNivelExperencia() + "," + nuevo.getVidaJugador() + "," + nuevo.getMonedas() + "," + nuevo.getNick();
+                            fileContent.add(lineaNueva);
                             }
                         }
                     }
-
                     try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, false))) {
                         for (String line : fileContent) {
                             writer.write(line);

@@ -14,8 +14,9 @@ public class prueba {
 
         System.out.println(prueba2.alta(jugador1));
         System.out.println(prueba2.alta(jugador2));
-
-        System.out.println(prueba.listadoGeneral());
-
+        System.out.println(prueba2.listadoGeneral());
+        System.out.println(prueba2.baja(jugador2));
+        System.out.println(prueba2.listadoPorId(jugador2));
+        System.out.println(prueba2.listadoPorId(jugador1));
     }
 }
