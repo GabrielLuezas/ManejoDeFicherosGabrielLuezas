@@ -5,21 +5,22 @@ import java.io.Serializable;
 public class Jugador implements Serializable{
 
     private int idJugador;
+    private String nick;
     private int nivelExperencia;
     private int vidaJugador;
     private int monedas;
-    private String nick;
 
-    public Jugador(int idJugador, int nivelExperencia, int vidaJugador, int monedas,String nick){
+
+    public Jugador(int idJugador, String nick, int nivelExperencia, int vidaJugador, int monedas) {
         this.setIdJugador(idJugador);
         this.setNick(nick);
         this.setNivelExperencia(nivelExperencia);
-        this.setMonedas(monedas);
         this.setVidaJugador(vidaJugador);
+        this.setMonedas(monedas);
     }
 
     public Jugador(int idJugador){
-        this(idJugador,0,0,0,"");
+        this(idJugador,"",0,0,0);
     }
 
     public int getIdJugador() {
@@ -81,10 +82,10 @@ public class Jugador implements Serializable{
     public String toString() {
         return "Jugador{" +
                 "idJugador=" + idJugador +
-                ", nivelExperencia=" + nivelExperencia +
+                ", nick='" + nick + '\'' +
+                ", nivelExperiencia=" + nivelExperencia +
                 ", vidaJugador=" + vidaJugador +
                 ", monedas=" + monedas +
-                ", nick='" + nick + '\'' +
                 '}';
     }
 }

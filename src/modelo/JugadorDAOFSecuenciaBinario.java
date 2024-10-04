@@ -3,14 +3,12 @@ package modelo;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
 
     private static final String NOMBRE_DIRECTORIO = "Ficheros";
     private static final String NOMBRE_ARCHIVO = "FicheroSecuencialBinario.dat";
-
-    List<Jugador> listaJugadores = new ArrayList<>();
-
     File directorio = new File(NOMBRE_DIRECTORIO);
     File archivo = new File(directorio, NOMBRE_ARCHIVO);
 
@@ -21,17 +19,17 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
                 archivo.createNewFile();
             }
 
-            listaJugadores = leerJugadores();
+            List<Jugador> listaJugadores = leerJugadores();
 
             if (listaJugadores.contains(o)) {
                 return "El jugador que intentas introducir ya está dentro del fichero";
             } else {
                 try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(archivo, true))) {
                     dos.writeInt(o.getIdJugador());
+                    dos.writeUTF(o.getNick());
                     dos.writeInt(o.getNivelExperencia());
                     dos.writeInt(o.getVidaJugador());
                     dos.writeInt(o.getMonedas());
-                    dos.writeUTF(o.getNick());
                     return "Jugador añadido correctamente";
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -50,9 +48,9 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
                 archivo.createNewFile();
             }
 
-            listaJugadores = leerJugadores();
+            List<Jugador> listaJugadores = leerJugadores();
 
-            if (!(listaJugadores.contains(viejo))) {
+            if (!listaJugadores.contains(viejo)) {
                 return "El jugador que se intenta borrar no existe";
             } else {
                 List<Jugador> jugadoresFiltrados = new ArrayList<>();
@@ -60,27 +58,28 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
                 try (DataInputStream dis = new DataInputStream(new FileInputStream(archivo))) {
                     while (dis.available() > 0) {
                         int idJugador = dis.readInt();
-                        int nivelExperencia = dis.readInt();
+                        String nick = dis.readUTF();
+                        int nivelExperiencia = dis.readInt();
                         int vidaJugador = dis.readInt();
                         int monedas = dis.readInt();
-                        String nick = dis.readUTF();
-
 
                         if (idJugador != viejo.getIdJugador()) {
-                            jugadoresFiltrados.add(new Jugador(idJugador, nivelExperencia, vidaJugador, monedas, nick));
+                            jugadoresFiltrados.add(new Jugador(idJugador, nick, nivelExperiencia, vidaJugador, monedas));
                         }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                     return "Error al leer el archivo .dat";
                 }
+
+                // Escribimos de nuevo todos los jugadores filtrados
                 try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(archivo, false))) {
                     for (Jugador jugador : jugadoresFiltrados) {
                         dos.writeInt(jugador.getIdJugador());
+                        dos.writeUTF(jugador.getNick());
                         dos.writeInt(jugador.getNivelExperencia());
                         dos.writeInt(jugador.getVidaJugador());
                         dos.writeInt(jugador.getMonedas());
-                        dos.writeUTF(jugador.getNick());
                     }
                     return "Jugador eliminado correctamente";
                 } catch (IOException e) {
@@ -100,49 +99,48 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
                 archivo.createNewFile();
             }
 
-            listaJugadores = leerJugadores();
+            List<Jugador> listaJugadores = leerJugadores();
 
-            if (!(listaJugadores.contains(nuevo))) {
+            if (!listaJugadores.contains(nuevo)) {
                 return "El jugador que se intenta modificar no existe";
             } else {
                 List<Jugador> jugadoresFiltrados = new ArrayList<>();
-                try {
-                    List<String> fileContent = new ArrayList<>();
-                    try (DataInputStream dis = new DataInputStream(new FileInputStream(archivo))) {
-                        String linea;
-                        while (dis.available() > 0) {
-                            int idJugador = dis.readInt();
-                            int nivelExperencia = dis.readInt();
-                            int vidaJugador = dis.readInt();
-                            int monedas = dis.readInt();
-                            String nick = dis.readUTF();
 
-                            if (idJugador != nuevo.getIdJugador()) {
-                                jugadoresFiltrados.add(new Jugador(idJugador, nivelExperencia, vidaJugador, monedas, nick));
-                            }else{
-                            String lineaNueva;
-                            lineaNueva = nuevo.getIdJugador() + "," + nuevo.getNivelExperencia() + "," + nuevo.getVidaJugador() + "," + nuevo.getMonedas() + "," + nuevo.getNick();
-                            fileContent.add(lineaNueva);
-                            }
+                try (DataInputStream dis = new DataInputStream(new FileInputStream(archivo))) {
+                    while (dis.available() > 0) {
+                        int idJugador = dis.readInt();
+                        String nick = dis.readUTF();
+                        int nivelExperiencia = dis.readInt();
+                        int vidaJugador = dis.readInt();
+                        int monedas = dis.readInt();
+
+                        // Reemplazamos el jugador existente con el nuevo
+                        if (idJugador == nuevo.getIdJugador()) {
+                            jugadoresFiltrados.add(nuevo);
+                        } else {
+                            jugadoresFiltrados.add(new Jugador(idJugador, nick, nivelExperiencia, vidaJugador, monedas));
                         }
                     }
-                    try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, false))) {
-                        for (String line : fileContent) {
-                            writer.write(line);
-                            writer.newLine();
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        return "Error al escribir en el archivo";
-                    }
-
                 } catch (IOException e) {
                     e.printStackTrace();
-                    return "Error al leer el archivo";
+                    return "Error al leer el archivo .dat";
                 }
-                return "Jugador modificado correctamente";
-            }
 
+                // Escribimos de nuevo todos los jugadores
+                try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(archivo, false))) {
+                    for (Jugador jugador : jugadoresFiltrados) {
+                        dos.writeInt(jugador.getIdJugador());
+                        dos.writeUTF(jugador.getNick());
+                        dos.writeInt(jugador.getNivelExperencia());
+                        dos.writeInt(jugador.getVidaJugador());
+                        dos.writeInt(jugador.getMonedas());
+                    }
+                    return "Jugador modificado correctamente";
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return "Error al escribir en el archivo .dat";
+                }
+            }
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
@@ -150,12 +148,11 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
 
     @Override
     public String listadoPorId(Jugador o) {
-
-        listaJugadores = leerJugadores();
+        List<Jugador> listaJugadores = leerJugadores();
         String respuesta = "No se ha encontrado a un jugador con ese id";
 
-        for(Jugador j : listaJugadores){
-            if(j.getIdJugador()==o.getIdJugador()){
+        for (Jugador j : listaJugadores) {
+            if (j.getIdJugador() == o.getIdJugador()) {
                 respuesta = j.toString();
             }
         }
@@ -164,19 +161,11 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
 
     @Override
     public String listadoGeneral() {
-
-        StringBuilder respuesta = new StringBuilder();
-
+        List<Jugador> listaJugadores = new ArrayList<>();
         listaJugadores = leerJugadores();
-
-        for(Jugador j : listaJugadores){
-
-            respuesta.append(j.toString());
-            respuesta.append("\n");
-
-        }
-
-        return respuesta.toString();
+        return listaJugadores.stream()
+                .map(Jugador::toString)
+                .collect(Collectors.joining("\n")); // Unir con salto de línea
     }
 
     public List<Jugador> leerJugadores() {
@@ -185,14 +174,16 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
             try (DataInputStream dis = new DataInputStream(new FileInputStream(archivo))) {
                 while (dis.available() > 0) {
                     int idJugador = dis.readInt();
+                    String nick = dis.readUTF();
                     int nivelExperiencia = dis.readInt();
                     int vidaJugador = dis.readInt();
                     int monedas = dis.readInt();
-                    String nick = dis.readUTF();
 
-                    Jugador jugador = new Jugador(idJugador, nivelExperiencia, vidaJugador, monedas, nick);
+                    Jugador jugador = new Jugador(idJugador, nick, nivelExperiencia, vidaJugador, monedas);
                     listaJugadores.add(jugador);
                 }
+            } catch (EOFException e) {
+                // Manejar EOFException de manera silenciosa, ya que es normal al final del archivo
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -200,5 +191,4 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
 
         return listaJugadores;
     }
-
 }

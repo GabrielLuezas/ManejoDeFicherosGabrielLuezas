@@ -3,6 +3,7 @@ package modelo;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
 
@@ -27,11 +28,11 @@ public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
                 return "El jugador que intentas introducir ya está dentro del fichero";
             } else {
                 try (BufferedWriter writer = new BufferedWriter(new FileWriter(archivo, true))) {
-                    writer.write(o.getIdJugador() + "," +
-                            o.getNivelExperencia() + "," +
-                            o.getVidaJugador() + "," +
-                            o.getMonedas() + "," +
-                            o.getNick());
+                    writer.write("[USER_ID = "+ o.getIdJugador() + "," +
+                            " NICK_NAME = " + o.getNick() + "," +
+                            " EXPERIENCE = " +o.getNivelExperencia() + "," +
+                            " LIFE_LEVEL = "+o.getVidaJugador() + "," +
+                            " COINS = " +o.getMonedas() + "]");
                     writer.newLine();
                     return "Jugador añadido correctamente";
                 } catch (IOException e) {
@@ -63,7 +64,7 @@ public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
                         String linea;
                         while ((linea = reader.readLine()) != null) {
                             String[] datos = linea.split(",");
-                            int idJugadorExistente = Integer.parseInt(datos[0]);
+                            int idJugadorExistente = Integer.parseInt(datos[0].substring(datos[0].lastIndexOf(" ") + 1));
 
                             if (idJugadorExistente != viejo.getIdJugador()) {
                                 fileContent.add(linea);
@@ -111,13 +112,16 @@ public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
                         String linea;
                         while ((linea = reader.readLine()) != null) {
                             String[] datos = linea.split(",");
-                            int idJugadorExistente = Integer.parseInt(datos[0]);
+                            int idJugadorExistente = Integer.parseInt(datos[0].substring(datos[0].lastIndexOf(" ") + 1));
 
                             if (idJugadorExistente != nuevo.getIdJugador()) {
                                 fileContent.add(linea);
                             }else{
-                                String lineaNueva;
-                                lineaNueva =  idJugadorExistente + "," + nuevo.getNivelExperencia() + "," + nuevo.getVidaJugador() + "," + nuevo.getMonedas() + "," + nuevo.getNick();
+                                String lineaNueva = "[USER_ID = " + idJugadorExistente + "," +
+                                        " NICK_NAME = " + nuevo.getNick() + "," +
+                                        " EXPERIENCE = " + nuevo.getNivelExperencia() + "," +
+                                        " LIFE_LEVEL = " + nuevo.getVidaJugador() + "," +
+                                        " COINS = " + nuevo.getMonedas() + "]";
                                 fileContent.add(lineaNueva);
                             }
                         }
@@ -161,36 +165,33 @@ public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
 
     @Override
     public String listadoGeneral() {
-
-        StringBuilder respuesta = new StringBuilder();
-
         listaJugadores = leerJugadores();
 
-        for(Jugador j : listaJugadores){
-
-            respuesta.append(j.toString());
-            respuesta.append("\n");
-
-        }
-
-        return respuesta.toString();
+        return listaJugadores.stream()
+                .map(Jugador::toString)
+                .collect(Collectors.joining("\n"));
     }
 
     private List<Jugador> leerJugadores() {
         List<Jugador> listaJugadores = new ArrayList<>();
 
-        // Use the correct file path for reading
         try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
             String linea;
             while ((linea = reader.readLine()) != null) {
                 String[] datos = linea.split(",");
-                int idJugador = Integer.parseInt(datos[0]);
-                int nivelExperiencia = Integer.parseInt(datos[1]);
-                int vidaJugador = Integer.parseInt(datos[2]);
-                int monedas = Integer.parseInt(datos[3]);
-                String nick = datos[4];
+                String substringID = datos[0].substring(datos[0].lastIndexOf(" ") + 1);
+                String substringNick = datos[1].substring(datos[1].lastIndexOf(" ") + 1);
+                String substringExp = datos[2].substring(datos[2].lastIndexOf(" ") + 1);
+                String substringVIda = datos[3].substring(datos[3].lastIndexOf(" ") + 1);
+                String substringMonedas = datos[4].substring(datos[4].lastIndexOf(" ") + 1);
+                substringMonedas = substringMonedas.replaceAll("[^0-9]", "");
+                int idJugador = Integer.parseInt(substringID);
+                String nick = substringNick;
+                int nivelExperiencia = Integer.parseInt(substringExp);
+                int vidaJugador = Integer.parseInt(substringVIda);
+                int monedas = Integer.parseInt(substringMonedas);
 
-                Jugador jugador = new Jugador(idJugador, nivelExperiencia, vidaJugador, monedas, nick);
+                Jugador jugador = new Jugador(idJugador, nick,nivelExperiencia, vidaJugador, monedas);
                 listaJugadores.add(jugador);
             }
         } catch (IOException e) {

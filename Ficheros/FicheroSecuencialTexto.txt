@@ -1,2 +1,2 @@
-1,5,100,50,Jugador1
-3,10,200,300,JugadorModificado
+[USER_ID = 1, NICK_NAME = JugadorModificado, EXPERIENCE = 8, LIFE_LEVEL = 300, COINS = 500]
+[USER_ID = 2, NICK_NAME = Jugador2, EXPERIENCE = 5, LIFE_LEVEL = 100, COINS = 50]
