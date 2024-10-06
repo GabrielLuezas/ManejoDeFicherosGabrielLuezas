@@ -2,6 +2,8 @@ package modelo;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,10 +46,9 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
         }
     }
 
-    // Método que encuentra el próximo ID disponible
     private int getNextIdDisponible(List<Jugador> jugadores) {
         if (jugadores.isEmpty()) {
-            return 0; // Si no hay jugadores, el ID es 0
+            return 0;
         }
         // Buscar el primer ID libre
         for (int i = 0; i <= jugadores.size(); i++) {
@@ -212,7 +213,7 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
                 e.printStackTrace();
             }
         }
-
+        Collections.sort(listaJugadores, Comparator.comparingInt(Jugador::getIdJugador));
         return listaJugadores;
     }
 }

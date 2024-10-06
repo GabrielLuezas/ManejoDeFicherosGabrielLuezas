@@ -2,6 +2,8 @@ package modelo;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -221,7 +223,7 @@ public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        Collections.sort(listaJugadores, Comparator.comparingInt(Jugador::getIdJugador));
         return listaJugadores;
     }
 
