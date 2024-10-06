@@ -1,2 +1,4 @@
-[USER_ID = 1, NICK_NAME = JugadorModificado, EXPERIENCE = 8, LIFE_LEVEL = 300, COINS = 500]
-[USER_ID = 2, NICK_NAME = Jugador2, EXPERIENCE = 5, LIFE_LEVEL = 100, COINS = 50]
+[USER_ID = 0, NICK_NAME = Jugador1, EXPERIENCE = 5, LIFE_LEVEL = 100, COINS = 50]
+[USER_ID = 1, NICK_NAME = OMEGAINCREIBLEJUGADORLOLOLOLOLOLOLOLOLOLOLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaO, EXPERIENCE = 5, LIFE_LEVEL = 100, COINS = 50]
+[USER_ID = 2, NICK_NAME = Jugador1, EXPERIENCE = 5, LIFE_LEVEL = 100, COINS = 50]
+[USER_ID = 3, NICK_NAME = OMEGAINCREIBLEJUGADORLOLOLOLOLOLOLOLOLOLOLaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaO, EXPERIENCE = 5, LIFE_LEVEL = 100, COINS = 50]

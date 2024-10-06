@@ -21,6 +21,9 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
 
             List<Jugador> listaJugadores = leerJugadores();
 
+            int nuevoId = getNextIdDisponible(listaJugadores); // Obtener el siguiente ID disponible
+            o.setIdJugador(nuevoId); // Asignar el nuevo ID
+
             if (listaJugadores.contains(o)) {
                 return "El jugador que intentas introducir ya está dentro del fichero";
             } else {
@@ -39,6 +42,27 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
         } catch (IOException ex) {
             throw new RuntimeException(ex);
         }
+    }
+
+    // Método que encuentra el próximo ID disponible
+    private int getNextIdDisponible(List<Jugador> jugadores) {
+        if (jugadores.isEmpty()) {
+            return 0; // Si no hay jugadores, el ID es 0
+        }
+        // Buscar el primer ID libre
+        for (int i = 0; i <= jugadores.size(); i++) {
+            boolean idOcupado = false;
+            for (Jugador jugador : jugadores) {
+                if (jugador.getIdJugador() == i) {
+                    idOcupado = true;
+                    break;
+                }
+            }
+            if (!idOcupado) {
+                return i; // El primer ID no ocupado
+            }
+        }
+        return jugadores.size(); // Si no hay huecos, devolver el siguiente ID secuencial
     }
 
     @Override

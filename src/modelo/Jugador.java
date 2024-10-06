@@ -19,6 +19,10 @@ public class Jugador implements Serializable{
         this.setMonedas(monedas);
     }
 
+    public Jugador(String nick, int nivelExperencia, int vidaJugador, int monedas){
+        this(0,nick,nivelExperencia,vidaJugador,monedas);
+    }
+
     public Jugador(int idJugador){
         this(idJugador,"",0,0,0);
     }
