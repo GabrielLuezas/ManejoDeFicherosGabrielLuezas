@@ -1,10 +1,7 @@
 package vista;
 
 import controlador.Controlador;
-import modelo.Jugador;
-import modelo.JugadorDAOFObjetosBinario;
-import modelo.JugadorDAOFSecuenciaBinario;
-import modelo.JugadorDAOFSecuencialTexto;
+import modelo.*;
 
 import java.util.Scanner;
 
@@ -174,7 +171,7 @@ public class VConsola implements IVista<Jugador>{
                     break;
                 case 4:
                     System.out.println("Ha seleccionado: Fichero de acceso aleatorio binario (RandomAccessFile)");
-                    //controlador.setModelo(new JugadorDAOFSecuencialTexto());
+                    controlador.setModelo(new JugadorDAOFAccesoAleatorioBinario());
                     break;
                 case 5:
                     System.out.println("Ha seleccionado: Fichero de texto XML (DOM)");
@@ -182,6 +179,7 @@ public class VConsola implements IVista<Jugador>{
                     break;
                 case 6:
                     System.out.println("Saliendo del programa...");
+                    System.exit(0);
                     break;
                 default:
                     System.out.println("Opción no válida. Intente de nuevo.");
