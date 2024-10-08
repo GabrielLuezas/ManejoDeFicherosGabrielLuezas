@@ -91,28 +91,70 @@ public class JugadorDAOFObjetosBinario implements IDAO<Jugador>{
 
     @Override
     public String modificar(Jugador nuevo) {
-        return null;
+        try {
+            if (!archivo.exists()) {
+                archivo.createNewFile();
+            }
+
+            listaJugadores = leerJugadores();
+
+            if (!listaJugadores.contains(nuevo)) {
+                return "El jugador que se intenta modificar no existe";
+            } else {
+                listaJugadores.set(nuevo.getIdJugador(),nuevo);
+                try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(archivo))) {
+                    oos.writeObject(listaJugadores);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                return "Jugador modificado correctamente";
+            }
+        } catch (IOException ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
-    @Override
-    public String listadoPorId(Jugador o) {
+    @Override    public String listadoPorId(Jugador o) {
         List<Jugador> listaJugadores = leerJugadores();
-        String respuesta = "No se ha encontrado a un jugador con ese id";
+
+        // Inicia la respuesta como un mensaje que indica que no se encontró el jugador
+        StringBuilder respuesta = new StringBuilder("No se ha encontrado a un jugador con ese id");
 
         for (Jugador j : listaJugadores) {
             if (j.getIdJugador() == o.getIdJugador()) {
-                respuesta = j.toString();
+                respuesta = new StringBuilder(); // Reiniciamos la respuesta si se encuentra el jugador
+                respuesta.append("ID: ").append(j.getIdJugador()).append("\n")
+                        .append("Jugador: ").append(j.getNick()).append("\n")
+                        .append("Nivel de Experiencia: ").append(j.getNivelExperencia()).append("\n")
+                        .append("Puntos de Vida: ").append(j.getVidaJugador()).append("\n")
+                        .append("Monedas: ").append(j.getMonedas()).append("\n");
+                break; // Salimos del bucle una vez encontrado el jugador
             }
         }
-        return respuesta;
+        return respuesta.toString();
     }
 
     @Override
     public String listadoGeneral() {
-        List<Jugador> listaJugadores = leerJugadores();
-        return listaJugadores.stream()
-                .map(Jugador::toString)
-                .collect(Collectors.joining("\n"));
+        listaJugadores = leerJugadores();
+
+        if (listaJugadores != null && !listaJugadores.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Listado de todos los jugadores\n");
+            for (Jugador jugador : listaJugadores) {
+                sb.append("-------------------\n");
+                sb.append("ID: ").append(jugador.getIdJugador()).append("\n")
+                        .append("Jugador: ").append(jugador.getNick()).append("\n")
+                        .append("Nivel de Experiencia: ").append(jugador.getNivelExperencia()).append("\n")
+                        .append("Puntos de Vida: ").append(jugador.getVidaJugador()).append("\n")
+                        .append("Monedas: ").append(jugador.getMonedas()).append("\n")
+                        .append("-------------------");
+            }
+
+            return sb.toString();
+        } else {
+            return "El fichero de texto está vacío";
+        }
     }
 
     public List<Jugador> leerJugadores() {

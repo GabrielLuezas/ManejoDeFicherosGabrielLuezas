@@ -27,6 +27,10 @@ public class Jugador implements Serializable{
         this(idJugador,"",0,0,0);
     }
 
+    public Jugador(){
+        this(0,"",0,0,0);
+    }
+
     public int getIdJugador() {
         return idJugador;
     }

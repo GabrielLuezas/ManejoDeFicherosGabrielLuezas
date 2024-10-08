@@ -177,54 +177,81 @@ public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
 
     @Override
     public String listadoPorId(Jugador o) {
+        List<Jugador> listaJugadores = leerJugadores();
 
-        listaJugadores = leerJugadores();
-        String respuesta = "No se ha encontrado a un jugador con ese id";
 
-        for(Jugador j : listaJugadores){
-            if(j.getIdJugador()==o.getIdJugador()){
-                respuesta = j.toString();
+        StringBuilder respuesta = new StringBuilder("No se ha encontrado a un jugador con ese id");
+
+        for (Jugador j : listaJugadores) {
+            if (j.getIdJugador() == o.getIdJugador()) {
+                respuesta = new StringBuilder();
+                respuesta.append("-------------------\n");
+                respuesta.append("ID: ").append(j.getIdJugador()).append("\n")
+                        .append("Jugador: ").append(j.getNick()).append("\n")
+                        .append("Nivel de Experiencia: ").append(j.getNivelExperencia()).append("\n")
+                        .append("Puntos de Vida: ").append(j.getVidaJugador()).append("\n")
+                        .append("Monedas: ").append(j.getMonedas()).append("\n")
+                        .append("-------------------");
+                break;
             }
         }
-        return respuesta;
+        return respuesta.toString();
     }
 
     @Override
     public String listadoGeneral() {
         listaJugadores = leerJugadores();
 
-        return listaJugadores.stream()
-                .map(Jugador::toString)
-                .collect(Collectors.joining("\n"));
+        if (listaJugadores != null && !listaJugadores.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Listado de todos los jugadores\n");
+            for (Jugador jugador : listaJugadores) {
+                sb.append("-------------------\n");
+                sb.append("ID: ").append(jugador.getIdJugador()).append("\n")
+                        .append("Jugador: ").append(jugador.getNick()).append("\n")
+                        .append("Nivel de Experiencia: ").append(jugador.getNivelExperencia()).append("\n")
+                        .append("Puntos de Vida: ").append(jugador.getVidaJugador()).append("\n")
+                        .append("Monedas: ").append(jugador.getMonedas()).append("\n")
+                        .append("-------------------");
+            }
+
+            return sb.toString();
+        } else {
+            return "El fichero de texto está vacío";
+        }
     }
 
     private List<Jugador> leerJugadores() {
         List<Jugador> listaJugadores = new ArrayList<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
-            String linea;
-            while ((linea = reader.readLine()) != null) {
-                String[] datos = linea.split(",");
-                String substringID = datos[0].substring(datos[0].lastIndexOf(" ") + 1);
-                String substringNick = datos[1].substring(datos[1].lastIndexOf(" ") + 1);
-                String substringExp = datos[2].substring(datos[2].lastIndexOf(" ") + 1);
-                String substringVIda = datos[3].substring(datos[3].lastIndexOf(" ") + 1);
-                String substringMonedas = datos[4].substring(datos[4].lastIndexOf(" ") + 1);
-                substringMonedas = substringMonedas.replaceAll("[^0-9]", "");
-                int idJugador = Integer.parseInt(substringID);
-                String nick = substringNick;
-                int nivelExperiencia = Integer.parseInt(substringExp);
-                int vidaJugador = Integer.parseInt(substringVIda);
-                int monedas = Integer.parseInt(substringMonedas);
+        if(archivo.exists()){
+            try (BufferedReader reader = new BufferedReader(new FileReader(archivo))) {
+                String linea;
+                while ((linea = reader.readLine()) != null) {
+                    String[] datos = linea.split(",");
+                    String substringID = datos[0].substring(datos[0].lastIndexOf(" ") + 1);
+                    String substringNick = datos[1].substring(datos[1].lastIndexOf(" ") + 1);
+                    String substringExp = datos[2].substring(datos[2].lastIndexOf(" ") + 1);
+                    String substringVIda = datos[3].substring(datos[3].lastIndexOf(" ") + 1);
+                    String substringMonedas = datos[4].substring(datos[4].lastIndexOf(" ") + 1);
+                    substringMonedas = substringMonedas.replaceAll("[^0-9]", "");
+                    int idJugador = Integer.parseInt(substringID);
+                    String nick = substringNick;
+                    int nivelExperiencia = Integer.parseInt(substringExp);
+                    int vidaJugador = Integer.parseInt(substringVIda);
+                    int monedas = Integer.parseInt(substringMonedas);
 
-                Jugador jugador = new Jugador(idJugador, nick,nivelExperiencia, vidaJugador, monedas);
-                listaJugadores.add(jugador);
+                    Jugador jugador = new Jugador(idJugador, nick,nivelExperiencia, vidaJugador, monedas);
+                    listaJugadores.add(jugador);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            Collections.sort(listaJugadores, Comparator.comparingInt(Jugador::getIdJugador));
+            return listaJugadores;
         }
-        Collections.sort(listaJugadores, Comparator.comparingInt(Jugador::getIdJugador));
-        return listaJugadores;
+
+        return null;
     }
 
 }

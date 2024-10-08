@@ -186,11 +186,25 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
 
     @Override
     public String listadoGeneral() {
-        List<Jugador> listaJugadores = new ArrayList<>();
-        listaJugadores = leerJugadores();
-        return listaJugadores.stream()
-                .map(Jugador::toString)
-                .collect(Collectors.joining("\n")); // Unir con salto de línea
+        List<Jugador> listaJugadores = leerJugadores();
+
+        if (listaJugadores != null && !listaJugadores.isEmpty()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append("Listado de todos los jugadores\n");
+            for (Jugador jugador : listaJugadores) {
+                sb.append("-------------------\n");
+                sb.append("ID: ").append(jugador.getIdJugador()).append("\n")
+                        .append("Jugador: ").append(jugador.getNick()).append("\n")
+                        .append("Nivel de Experiencia: ").append(jugador.getNivelExperencia()).append("\n")
+                        .append("Puntos de Vida: ").append(jugador.getVidaJugador()).append("\n")
+                        .append("Monedas: ").append(jugador.getMonedas()).append("\n")
+                        .append("-------------------");
+            }
+
+            return sb.toString();
+        } else {
+            return "El fichero de texto está vacío";
+        }
     }
 
     public List<Jugador> leerJugadores() {
