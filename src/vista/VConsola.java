@@ -175,7 +175,7 @@ public class VConsola implements IVista<Jugador>{
                     break;
                 case 5:
                     System.out.println("Ha seleccionado: Fichero de texto XML (DOM)");
-                    //controlador.setModelo(new JugadorDAOFSecuencialTexto());
+                    controlador.setModelo(new JugadorDAOFXML());
                     break;
                 case 6:
                     System.out.println("Saliendo del programa...");

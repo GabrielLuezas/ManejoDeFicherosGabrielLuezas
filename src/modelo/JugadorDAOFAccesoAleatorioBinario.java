@@ -164,6 +164,7 @@ public class JugadorDAOFAccesoAleatorioBinario implements IDAO<Jugador>{
         listaJugadores = leerJugadores();
 
         if (listaJugadores != null && !listaJugadores.isEmpty()) {
+
             StringBuilder sb = new StringBuilder();
             sb.append("Listado de todos los jugadores\n");
             for (Jugador jugador : listaJugadores) {
@@ -185,22 +186,25 @@ public class JugadorDAOFAccesoAleatorioBinario implements IDAO<Jugador>{
     public List<Jugador> leerJugadores() {
         List<Jugador> listaJugadores = new ArrayList<>();
 
-        try (RandomAccessFile use = new RandomAccessFile(archivo, "r")) {
-            use.seek(0);
-            while (use.getFilePointer() < use.length()) {
-                int id = use.readInt();
-                String nombre = use.readUTF();
-                int nivelExperiencia = use.readInt();
-                int vidaJugador = use.readInt();
-                int monedas = use.readInt();
+        if(archivo.exists()){
+            try (RandomAccessFile use = new RandomAccessFile(archivo, "r")) {
+                use.seek(0);
+                while (use.getFilePointer() < use.length()) {
+                    int id = use.readInt();
+                    String nombre = use.readUTF();
+                    int nivelExperiencia = use.readInt();
+                    int vidaJugador = use.readInt();
+                    int monedas = use.readInt();
 
-                Jugador jugador = new Jugador(id, nombre, nivelExperiencia,vidaJugador,monedas);
-                listaJugadores.add(jugador);
+                    Jugador jugador = new Jugador(id, nombre, nivelExperiencia,vidaJugador,monedas);
+                    listaJugadores.add(jugador);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            Collections.sort(listaJugadores, Comparator.comparingInt(Jugador::getIdJugador));
+            return listaJugadores;
         }
-        Collections.sort(listaJugadores, Comparator.comparingInt(Jugador::getIdJugador));
-        return listaJugadores;
+        return null;
     }
 }
