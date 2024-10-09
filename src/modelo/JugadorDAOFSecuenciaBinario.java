@@ -14,6 +14,8 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
     File directorio = new File(NOMBRE_DIRECTORIO);
     File archivo = new File(directorio, NOMBRE_ARCHIVO);
 
+    List<Jugador> listaJugadores = new ArrayList<>();
+
     @Override
     public String alta(Jugador o) {
         try {
@@ -21,7 +23,7 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
                 archivo.createNewFile();
             }
 
-            List<Jugador> listaJugadores = leerJugadores();
+            listaJugadores = leerJugadores();
 
             int nuevoId = getNextIdDisponible(listaJugadores); // Obtener el siguiente ID disponible
             o.setIdJugador(nuevoId); // Asignar el nuevo ID
@@ -73,7 +75,7 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
                 archivo.createNewFile();
             }
 
-            List<Jugador> listaJugadores = leerJugadores();
+            listaJugadores = leerJugadores();
 
             if (!listaJugadores.contains(viejo)) {
                 return "El jugador que se intenta borrar no existe";
@@ -124,7 +126,7 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
                 archivo.createNewFile();
             }
 
-            List<Jugador> listaJugadores = leerJugadores();
+            listaJugadores = leerJugadores();
 
             if (!listaJugadores.contains(nuevo)) {
                 return "El jugador que se intenta modificar no existe";
@@ -173,20 +175,32 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
 
     @Override
     public String listadoPorId(Jugador o) {
-        List<Jugador> listaJugadores = leerJugadores();
-        String respuesta = "No se ha encontrado a un jugador con ese id";
 
-        for (Jugador j : listaJugadores) {
-            if (j.getIdJugador() == o.getIdJugador()) {
-                respuesta = j.toString();
+        listaJugadores = leerJugadores();
+
+        StringBuilder respuesta = new StringBuilder("No se ha encontrado a un jugador con ese id");
+
+        if (listaJugadores != null && !listaJugadores.isEmpty()){
+            for (Jugador j : listaJugadores) {
+                if (j.getIdJugador() == o.getIdJugador()) {
+                    respuesta = new StringBuilder();
+                    respuesta.append("-------------------\n");
+                    respuesta.append("ID: ").append(j.getIdJugador()).append("\n")
+                            .append("Jugador: ").append(j.getNick()).append("\n")
+                            .append("Nivel de Experiencia: ").append(j.getNivelExperencia()).append("\n")
+                            .append("Puntos de Vida: ").append(j.getVidaJugador()).append("\n")
+                            .append("Monedas: ").append(j.getMonedas()).append("\n")
+                            .append("-------------------");
+                    break;
+                }
             }
         }
-        return respuesta;
+        return respuesta.toString();
     }
 
     @Override
     public String listadoGeneral() {
-        List<Jugador> listaJugadores = leerJugadores();
+        listaJugadores = leerJugadores();
 
         if (listaJugadores != null && !listaJugadores.isEmpty()) {
             StringBuilder sb = new StringBuilder();
@@ -205,6 +219,11 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
         } else {
             return "El fichero de texto está vacío";
         }
+    }
+
+    @Override
+    public void setNOMBRE_DIRECTORIO(String o) {
+
     }
 
     public List<Jugador> leerJugadores() {

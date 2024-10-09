@@ -9,13 +9,22 @@ import java.util.stream.Collectors;
 
 public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
 
-    private static final String NOMBRE_DIRECTORIO = "Ficheros";
+
+    public JugadorDAOFSecuencialTexto(String nombreDirectorio, String ruta){
+        NOMBRE_DIRECTORIO = nombreDirectorio;
+        directorio = new File(ruta, NOMBRE_DIRECTORIO);
+        if(!directorio.isDirectory()){
+            directorio.mkdir();
+        }
+        archivo = new File(directorio, NOMBRE_ARCHIVO);
+    }
+    private String NOMBRE_DIRECTORIO;
     private static final String NOMBRE_ARCHIVO = "FicheroSecuencialTexto.txt";
 
     List<Jugador> listaJugadores = new ArrayList<>();
 
-    File directorio = new File(NOMBRE_DIRECTORIO);
-    File archivo = new File(directorio, NOMBRE_ARCHIVO);
+    File directorio;
+    File archivo;
 
     @Override
     public String alta(Jugador o) {
@@ -177,22 +186,24 @@ public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
 
     @Override
     public String listadoPorId(Jugador o) {
-        List<Jugador> listaJugadores = leerJugadores();
 
+        listaJugadores = leerJugadores();
 
         StringBuilder respuesta = new StringBuilder("No se ha encontrado a un jugador con ese id");
 
-        for (Jugador j : listaJugadores) {
-            if (j.getIdJugador() == o.getIdJugador()) {
-                respuesta = new StringBuilder();
-                respuesta.append("-------------------\n");
-                respuesta.append("ID: ").append(j.getIdJugador()).append("\n")
-                        .append("Jugador: ").append(j.getNick()).append("\n")
-                        .append("Nivel de Experiencia: ").append(j.getNivelExperencia()).append("\n")
-                        .append("Puntos de Vida: ").append(j.getVidaJugador()).append("\n")
-                        .append("Monedas: ").append(j.getMonedas()).append("\n")
-                        .append("-------------------");
-                break;
+        if (listaJugadores != null && !listaJugadores.isEmpty()){
+            for (Jugador j : listaJugadores) {
+                if (j.getIdJugador() == o.getIdJugador()) {
+                    respuesta = new StringBuilder();
+                    respuesta.append("-------------------\n");
+                    respuesta.append("ID: ").append(j.getIdJugador()).append("\n")
+                            .append("Jugador: ").append(j.getNick()).append("\n")
+                            .append("Nivel de Experiencia: ").append(j.getNivelExperencia()).append("\n")
+                            .append("Puntos de Vida: ").append(j.getVidaJugador()).append("\n")
+                            .append("Monedas: ").append(j.getMonedas()).append("\n")
+                            .append("-------------------");
+                    break;
+                }
             }
         }
         return respuesta.toString();
@@ -219,6 +230,11 @@ public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
         } else {
             return "El fichero de texto está vacío";
         }
+    }
+
+    @Override
+    public void setNOMBRE_DIRECTORIO(String o) {
+        NOMBRE_DIRECTORIO = o;
     }
 
     private List<Jugador> leerJugadores() {

@@ -11,6 +11,8 @@ public class VConsola implements IVista<Jugador>{
     private Jugador jugadorAuxiliar;
     private Controlador controlador;
 
+    private boolean menuInicial = false;
+
     public VConsola() {
         this.scanner = new Scanner(System.in);
     }
@@ -35,6 +37,7 @@ public class VConsola implements IVista<Jugador>{
         int op;
         if(controlador.getModelo()==null){
             desplegarEleccionDeArchivos();
+            menuInicial=true;
         }
         do {
             desplegarMenu();
@@ -84,19 +87,20 @@ public class VConsola implements IVista<Jugador>{
         System.out.println("========= Modificación de un Jugador =========");
 
         System.out.print("Introduce el id del jugador que quieres modificar:");
+
         jugadorAuxiliar.setIdJugador(scanner.nextInt());
         scanner.nextLine();
 
         System.out.print("Introduce el nuevo nombre del jugador con el id " + jugadorAuxiliar.getIdJugador() + ":");
         jugadorAuxiliar.setNick(scanner.nextLine());
 
-        System.out.print("Introduce el nuevo nivel de experiencia del jugador con el id" + jugadorAuxiliar.getIdJugador()+ ":");
+        System.out.print("Introduce el nuevo nivel de experiencia del jugador con el id " + jugadorAuxiliar.getIdJugador()+ ":");
         jugadorAuxiliar.setNivelExperencia(scanner.nextInt());
 
-        System.out.print("Introduce los nuevos puntos de vida del jugador con el id" + jugadorAuxiliar.getIdJugador()+ ":");
+        System.out.print("Introduce los nuevos puntos de vida del jugador con el id " + jugadorAuxiliar.getIdJugador()+ ":");
         jugadorAuxiliar.setVidaJugador(scanner.nextInt());
 
-        System.out.print("Introduce el nuevo numero de monedas del jugador con el id" + jugadorAuxiliar.getIdJugador()+ ":");
+        System.out.print("Introduce el nuevo numero de monedas del jugador con el id " + jugadorAuxiliar.getIdJugador()+ ":");
         jugadorAuxiliar.setMonedas(scanner.nextInt());
 
         controlador.operacion(3);
@@ -144,6 +148,8 @@ public class VConsola implements IVista<Jugador>{
 
     private void desplegarEleccionDeArchivos() {
         int opcion;
+        String nombreCarpeta;
+        String ruta;
         do {
             System.out.println("Seleccione el tipo de almacenamiento:");
             System.out.println("1. Fichero secuencial de texto (BufferedReader/BufferedWriter)");
@@ -159,27 +165,36 @@ public class VConsola implements IVista<Jugador>{
             switch (opcion) {
                 case 1:
                     System.out.println("Ha seleccionado: Fichero secuencial de texto (BufferedReader/BufferedWriter)");
-                    controlador.setModelo(new JugadorDAOFSecuencialTexto());
+                    nombreCarpeta = controlador.getNombreCarpeta();
+                    ruta = controlador.getRutaFichero();
+                    controlador.setModelo(new JugadorDAOFSecuencialTexto(nombreCarpeta,ruta));
                     break;
                 case 2:
                     System.out.println("Ha seleccionado: Fichero secuencial binario (DataInputStream/DataOutputStream)");
                     controlador.setModelo(new JugadorDAOFSecuenciaBinario());
+                    controlador.getModelo().setNOMBRE_DIRECTORIO(controlador.getNombreCarpeta());
                     break;
                 case 3:
                     System.out.println("Ha seleccionado: Fichero de objetos binario (ObjectInputStream/ObjectOutputStream)");
                     controlador.setModelo(new JugadorDAOFObjetosBinario());
+                    controlador.getModelo().setNOMBRE_DIRECTORIO(controlador.getNombreCarpeta());
                     break;
                 case 4:
                     System.out.println("Ha seleccionado: Fichero de acceso aleatorio binario (RandomAccessFile)");
                     controlador.setModelo(new JugadorDAOFAccesoAleatorioBinario());
+                    controlador.getModelo().setNOMBRE_DIRECTORIO(controlador.getNombreCarpeta());
                     break;
                 case 5:
                     System.out.println("Ha seleccionado: Fichero de texto XML (DOM)");
                     controlador.setModelo(new JugadorDAOFXML());
+                    controlador.getModelo().setNOMBRE_DIRECTORIO(controlador.getNombreCarpeta());
                     break;
                 case 6:
-                    System.out.println("Saliendo del programa...");
-                    System.exit(0);
+                    if(menuInicial){
+                    }else{
+                        System.out.println("Saliendo del programa...");
+                        System.exit(0);
+                    }
                     break;
                 default:
                     System.out.println("Opción no válida. Intente de nuevo.");

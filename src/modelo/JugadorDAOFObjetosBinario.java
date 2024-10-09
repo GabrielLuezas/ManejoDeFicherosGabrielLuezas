@@ -114,21 +114,26 @@ public class JugadorDAOFObjetosBinario implements IDAO<Jugador>{
         }
     }
 
-    @Override    public String listadoPorId(Jugador o) {
-        List<Jugador> listaJugadores = leerJugadores();
+    @Override
+    public String listadoPorId(Jugador o) {
 
-        // Inicia la respuesta como un mensaje que indica que no se encontró el jugador
+        listaJugadores = leerJugadores();
+
         StringBuilder respuesta = new StringBuilder("No se ha encontrado a un jugador con ese id");
 
-        for (Jugador j : listaJugadores) {
-            if (j.getIdJugador() == o.getIdJugador()) {
-                respuesta = new StringBuilder(); // Reiniciamos la respuesta si se encuentra el jugador
-                respuesta.append("ID: ").append(j.getIdJugador()).append("\n")
-                        .append("Jugador: ").append(j.getNick()).append("\n")
-                        .append("Nivel de Experiencia: ").append(j.getNivelExperencia()).append("\n")
-                        .append("Puntos de Vida: ").append(j.getVidaJugador()).append("\n")
-                        .append("Monedas: ").append(j.getMonedas()).append("\n");
-                break; // Salimos del bucle una vez encontrado el jugador
+        if (listaJugadores != null && !listaJugadores.isEmpty()){
+            for (Jugador j : listaJugadores) {
+                if (j.getIdJugador() == o.getIdJugador()) {
+                    respuesta = new StringBuilder();
+                    respuesta.append("-------------------\n");
+                    respuesta.append("ID: ").append(j.getIdJugador()).append("\n")
+                            .append("Jugador: ").append(j.getNick()).append("\n")
+                            .append("Nivel de Experiencia: ").append(j.getNivelExperencia()).append("\n")
+                            .append("Puntos de Vida: ").append(j.getVidaJugador()).append("\n")
+                            .append("Monedas: ").append(j.getMonedas()).append("\n")
+                            .append("-------------------");
+                    break;
+                }
             }
         }
         return respuesta.toString();
@@ -155,6 +160,11 @@ public class JugadorDAOFObjetosBinario implements IDAO<Jugador>{
         } else {
             return "El fichero de texto está vacío";
         }
+    }
+
+    @Override
+    public void setNOMBRE_DIRECTORIO(String o) {
+
     }
 
     public List<Jugador> leerJugadores() {

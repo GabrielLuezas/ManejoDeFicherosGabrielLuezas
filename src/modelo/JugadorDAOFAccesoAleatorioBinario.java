@@ -8,7 +8,8 @@ import java.util.List;
 
 public class JugadorDAOFAccesoAleatorioBinario implements IDAO<Jugador>{
 
-    private static final String NOMBRE_DIRECTORIO = "Ficheros";
+
+    private String NOMBRE_DIRECTORIO = "Ficheros";
     private static final String NOMBRE_ARCHIVO = "FicheroAccesoAleatorioBinario.dat";
 
     List<Jugador> listaJugadores = new ArrayList<>();
@@ -139,21 +140,23 @@ public class JugadorDAOFAccesoAleatorioBinario implements IDAO<Jugador>{
     @Override
     public String listadoPorId(Jugador o) {
 
-        listaJugadores=leerJugadores();
+        listaJugadores = leerJugadores();
 
         StringBuilder respuesta = new StringBuilder("No se ha encontrado a un jugador con ese id");
 
-        for (Jugador j : listaJugadores) {
-            if (j.getIdJugador() == o.getIdJugador()) {
-                respuesta = new StringBuilder();
-                respuesta.append("-------------------\n");
-                respuesta.append("ID: ").append(j.getIdJugador()).append("\n")
-                        .append("Jugador: ").append(j.getNick()).append("\n")
-                        .append("Nivel de Experiencia: ").append(j.getNivelExperencia()).append("\n")
-                        .append("Puntos de Vida: ").append(j.getVidaJugador()).append("\n")
-                        .append("Monedas: ").append(j.getMonedas()).append("\n")
-                        .append("-------------------");
-                break;
+        if (listaJugadores != null && !listaJugadores.isEmpty()){
+            for (Jugador j : listaJugadores) {
+                if (j.getIdJugador() == o.getIdJugador()) {
+                    respuesta = new StringBuilder();
+                    respuesta.append("-------------------\n");
+                    respuesta.append("ID: ").append(j.getIdJugador()).append("\n")
+                            .append("Jugador: ").append(j.getNick()).append("\n")
+                            .append("Nivel de Experiencia: ").append(j.getNivelExperencia()).append("\n")
+                            .append("Puntos de Vida: ").append(j.getVidaJugador()).append("\n")
+                            .append("Monedas: ").append(j.getMonedas()).append("\n")
+                            .append("-------------------");
+                    break;
+                }
             }
         }
         return respuesta.toString();
@@ -181,6 +184,11 @@ public class JugadorDAOFAccesoAleatorioBinario implements IDAO<Jugador>{
         } else {
             return "El fichero de texto está vacío";
         }
+    }
+
+    @Override
+    public void setNOMBRE_DIRECTORIO(String o) {
+
     }
 
     public List<Jugador> leerJugadores() {

@@ -59,7 +59,7 @@ public class JugadorDAOFXML implements IDAO<Jugador>{
 
             root.appendChild(jugadorElement);
 
-            guardarDocumento(document);
+            guardarCambios(document);
             return "Jugador añadido correctamente";
         } catch (Exception e) {
             e.printStackTrace();
@@ -102,7 +102,7 @@ public class JugadorDAOFXML implements IDAO<Jugador>{
                         String idJugador = jugadorElement.getElementsByTagName("id").item(0).getTextContent();
                         if (Integer.parseInt(idJugador) == viejo.getIdJugador()) {
                             jugadorElement.getParentNode().removeChild(jugadorElement);
-                            guardarDocumento(document);
+                            guardarCambios(document);
                         }
                     }
                 }
@@ -136,7 +136,7 @@ public class JugadorDAOFXML implements IDAO<Jugador>{
                             jugadorElement.getElementsByTagName("vidaJugador").item(0).setTextContent(String.valueOf(nuevo.getVidaJugador()));
                             jugadorElement.getElementsByTagName("monedas").item(0).setTextContent(String.valueOf(nuevo.getMonedas()));
 
-                            guardarDocumento(document);
+                            guardarCambios(document);
                         }
                     }
                 }
@@ -151,21 +151,23 @@ public class JugadorDAOFXML implements IDAO<Jugador>{
     @Override
     public String listadoPorId(Jugador o) {
 
-        listaJugadores=leerJugadores();
+        listaJugadores = leerJugadores();
 
         StringBuilder respuesta = new StringBuilder("No se ha encontrado a un jugador con ese id");
 
-        for (Jugador j : listaJugadores) {
-            if (j.getIdJugador() == o.getIdJugador()) {
-                respuesta = new StringBuilder();
-                respuesta.append("-------------------\n");
-                respuesta.append("ID: ").append(j.getIdJugador()).append("\n")
-                        .append("Jugador: ").append(j.getNick()).append("\n")
-                        .append("Nivel de Experiencia: ").append(j.getNivelExperencia()).append("\n")
-                        .append("Puntos de Vida: ").append(j.getVidaJugador()).append("\n")
-                        .append("Monedas: ").append(j.getMonedas()).append("\n")
-                        .append("-------------------");
-                break;
+        if (listaJugadores != null && !listaJugadores.isEmpty()){
+            for (Jugador j : listaJugadores) {
+                if (j.getIdJugador() == o.getIdJugador()) {
+                    respuesta = new StringBuilder();
+                    respuesta.append("-------------------\n");
+                    respuesta.append("ID: ").append(j.getIdJugador()).append("\n")
+                            .append("Jugador: ").append(j.getNick()).append("\n")
+                            .append("Nivel de Experiencia: ").append(j.getNivelExperencia()).append("\n")
+                            .append("Puntos de Vida: ").append(j.getVidaJugador()).append("\n")
+                            .append("Monedas: ").append(j.getMonedas()).append("\n")
+                            .append("-------------------");
+                    break;
+                }
             }
         }
         return respuesta.toString();
@@ -195,6 +197,11 @@ public class JugadorDAOFXML implements IDAO<Jugador>{
         }
     }
 
+    @Override
+    public void setNOMBRE_DIRECTORIO(String o) {
+
+    }
+
     private Document obtenerDocumento() throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -211,7 +218,7 @@ public class JugadorDAOFXML implements IDAO<Jugador>{
         return document;
     }
 
-    private void guardarDocumento(Document document) throws TransformerException {
+    private void guardarCambios(Document document) throws TransformerException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
         DOMSource source = new DOMSource(document);

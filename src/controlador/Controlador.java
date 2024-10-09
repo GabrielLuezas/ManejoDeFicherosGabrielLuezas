@@ -9,6 +9,11 @@ public class Controlador {
     private IVista<Jugador> vista;
     private IDAO<Jugador> dao;
 
+    private String nombreCarpeta;
+    private String rutaFichero;
+    private String sistemaFicheros;
+
+
     public Controlador(IVista vista) {
         this.vista = vista;
     }
@@ -22,7 +27,7 @@ public class Controlador {
     }
 
 
-    public  void operacion(int op){
+    public void operacion(int op){
         Jugador aux;
         switch (op){
             case 1 -> {
@@ -48,4 +53,34 @@ public class Controlador {
 
     }
 
+    public void aplicarConfiguraciones(String[] configuraciones){
+        setNombreCarpeta(configuraciones[0]);
+        setRutaFichero(configuraciones[1]);
+        setSistemaFicheros(configuraciones[2]);
+    }
+
+
+    public String getNombreCarpeta() {
+        return nombreCarpeta;
+    }
+
+    public void setNombreCarpeta(String nombreFichero) {
+        this.nombreCarpeta = nombreFichero;
+    }
+
+    public String getRutaFichero() {
+        return rutaFichero;
+    }
+
+    public void setRutaFichero(String rutaFichero) {
+        this.rutaFichero = rutaFichero;
+    }
+
+    public String getSistemaFicheros() {
+        return sistemaFicheros;
+    }
+
+    public void setSistemaFicheros(String sistemaFicheros) {
+        this.sistemaFicheros = sistemaFicheros;
+    }
 }
