@@ -9,14 +9,21 @@ import java.util.stream.Collectors;
 
 public class JugadorDAOFObjetosBinario implements IDAO<Jugador>{
 
-    private static final String NOMBRE_DIRECTORIO = "Ficheros";
+    public JugadorDAOFObjetosBinario(String nombreDirectorio, String ruta){
+        NOMBRE_DIRECTORIO = nombreDirectorio;
+        directorio = new File(ruta, NOMBRE_DIRECTORIO);
+        if(!directorio.isDirectory()){
+            directorio.mkdir();
+        }
+        archivo = new File(directorio, NOMBRE_ARCHIVO);
+
+    }
     private static final String NOMBRE_ARCHIVO = "FicheroObjetosBinario.dat";
 
+    private String NOMBRE_DIRECTORIO;
+    File directorio;
+    File archivo;
     List<Jugador> listaJugadores = new ArrayList<>();
-
-    File directorio = new File(NOMBRE_DIRECTORIO);
-    File archivo = new File(directorio, NOMBRE_ARCHIVO);
-
     @Override
     public String alta(Jugador o) {
         try {
@@ -160,11 +167,6 @@ public class JugadorDAOFObjetosBinario implements IDAO<Jugador>{
         } else {
             return "El fichero de texto está vacío";
         }
-    }
-
-    @Override
-    public void setNOMBRE_DIRECTORIO(String o) {
-
     }
 
     public List<Jugador> leerJugadores() {

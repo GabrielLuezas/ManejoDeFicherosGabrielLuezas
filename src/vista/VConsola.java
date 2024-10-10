@@ -1,5 +1,6 @@
 package vista;
 
+import configuracion.ActualizarConfiguracion;
 import controlador.Controlador;
 import modelo.*;
 
@@ -10,6 +11,9 @@ public class VConsola implements IVista<Jugador>{
     private final Scanner scanner;
     private Jugador jugadorAuxiliar;
     private Controlador controlador;
+    private boolean cargadoDeDatos = false;
+
+    private ActualizarConfiguracion actConfiguracion = new ActualizarConfiguracion();
 
     private boolean menuInicial = false;
 
@@ -66,12 +70,30 @@ public class VConsola implements IVista<Jugador>{
                         desplegarEleccionDeArchivos();
                 case 7 -> {
                     System.out.println("Saliendo del programa...");
+                    actConfiguracion.setFormatoDeArchivo(saberTipoModelo());
+                    actConfiguracion.actualizarFicheroConfiguracion();
                     System.exit(0);
                 }
                 default ->
                         System.out.println("Introduce una entrada valida (del 1 al 7).");
             }
         } while (op!=7);
+    }
+
+    private String saberTipoModelo() {
+        String respuesta;
+        if(controlador.getModelo() instanceof JugadorDAOFSecuencialTexto){
+            respuesta = "1";
+        }else if(controlador.getModelo() instanceof JugadorDAOFSecuenciaBinario){
+            respuesta = "2";
+        }else if(controlador.getModelo() instanceof JugadorDAOFObjetosBinario){
+            respuesta = "3";
+        }else if(controlador.getModelo() instanceof JugadorDAOFAccesoAleatorioBinario){
+            respuesta = "4";
+        }else{
+            respuesta = "5";
+        }
+        return respuesta;
     }
 
     private void eventosConsultarPorNumPokedex() {
@@ -148,60 +170,85 @@ public class VConsola implements IVista<Jugador>{
 
     private void desplegarEleccionDeArchivos() {
         int opcion;
-        String nombreCarpeta;
-        String ruta;
-        do {
-            System.out.println("Seleccione el tipo de almacenamiento:");
-            System.out.println("1. Fichero secuencial de texto (BufferedReader/BufferedWriter)");
-            System.out.println("2. Fichero secuencial binario (DataInputStream/DataOutputStream)");
-            System.out.println("3. Fichero de objetos binario (ObjectInputStream/ObjectOutputStream)");
-            System.out.println("4. Fichero de acceso aleatorio binario (RandomAccessFile)");
-            System.out.println("5. Fichero de texto XML (DOM)");
-            System.out.println("6. Salir");
+        String nombreCarpeta = controlador.getNombreCarpeta();;
+        String ruta = controlador.getRutaFichero();
+        int sistemaFichero = controlador.getSistemaFicheros();
 
-            System.out.print("Ingrese su opción: ");
-            opcion = scanner.nextInt();
+        if(sistemaFichero==0 || sistemaFichero<1 || sistemaFichero>5 || cargadoDeDatos==true){
+            do {
+                System.out.println("Seleccione el tipo de almacenamiento:");
+                System.out.println("1. Fichero secuencial de texto (BufferedReader/BufferedWriter)");
+                System.out.println("2. Fichero secuencial binario (DataInputStream/DataOutputStream)");
+                System.out.println("3. Fichero de objetos binario (ObjectInputStream/ObjectOutputStream)");
+                System.out.println("4. Fichero de acceso aleatorio binario (RandomAccessFile)");
+                System.out.println("5. Fichero de texto XML (DOM)");
+                System.out.println("6. Salir");
 
-            switch (opcion) {
+                System.out.print("Ingrese su opción: ");
+                opcion = scanner.nextInt();
+
+                nombreCarpeta = controlador.getNombreCarpeta();
+                ruta = controlador.getRutaFichero();
+
+                switch (opcion) {
+                    case 1:
+                        System.out.println("Ha seleccionado: Fichero secuencial de texto (BufferedReader/BufferedWriter)");
+                        controlador.setModelo(new JugadorDAOFSecuencialTexto(nombreCarpeta,ruta));
+                        break;
+                    case 2:
+                        System.out.println("Ha seleccionado: Fichero secuencial binario (DataInputStream/DataOutputStream)");
+                        controlador.setModelo(new JugadorDAOFSecuenciaBinario(nombreCarpeta,ruta));
+                        break;
+                    case 3:
+                        System.out.println("Ha seleccionado: Fichero de objetos binario (ObjectInputStream/ObjectOutputStream)");
+                        controlador.setModelo(new JugadorDAOFObjetosBinario(nombreCarpeta,ruta));
+                        break;
+                    case 4:
+                        System.out.println("Ha seleccionado: Fichero de acceso aleatorio binario (RandomAccessFile)");
+                        controlador.setModelo(new JugadorDAOFAccesoAleatorioBinario(nombreCarpeta,ruta));
+                        break;
+                    case 5:
+                        System.out.println("Ha seleccionado: Fichero de texto XML (DOM)");
+                        controlador.setModelo(new JugadorDAOFXML(nombreCarpeta,ruta));
+                        break;
+                    case 6:
+                        if(menuInicial){
+                        }else{
+                            System.out.println("Saliendo del programa...");
+                            System.exit(0);
+                        }
+                        break;
+                    default:
+                        System.out.println("Opción no válida. Intente de nuevo.");
+                        break;
+                }
+                System.out.println();
+            } while (opcion <1 || opcion >6);
+        }else{
+            cargadoDeDatos = true;
+            switch (sistemaFichero) {
                 case 1:
-                    System.out.println("Ha seleccionado: Fichero secuencial de texto (BufferedReader/BufferedWriter)");
-                    nombreCarpeta = controlador.getNombreCarpeta();
-                    ruta = controlador.getRutaFichero();
+                    System.out.println("Cargando desde el fichero de configuracion el ultimo sistema de ficheros utilizados : Fichero secuencial de texto (BufferedReader/BufferedWriter)");
                     controlador.setModelo(new JugadorDAOFSecuencialTexto(nombreCarpeta,ruta));
                     break;
                 case 2:
-                    System.out.println("Ha seleccionado: Fichero secuencial binario (DataInputStream/DataOutputStream)");
-                    controlador.setModelo(new JugadorDAOFSecuenciaBinario());
-                    controlador.getModelo().setNOMBRE_DIRECTORIO(controlador.getNombreCarpeta());
+                    System.out.println("Cargando desde el fichero de configuracion el ultimo sistema de ficheros utilizados : Fichero secuencial binario (DataInputStream/DataOutputStream)");
+                    controlador.setModelo(new JugadorDAOFSecuenciaBinario(nombreCarpeta,ruta));
                     break;
                 case 3:
-                    System.out.println("Ha seleccionado: Fichero de objetos binario (ObjectInputStream/ObjectOutputStream)");
-                    controlador.setModelo(new JugadorDAOFObjetosBinario());
-                    controlador.getModelo().setNOMBRE_DIRECTORIO(controlador.getNombreCarpeta());
+                    System.out.println("Cargando desde el fichero de configuracion el ultimo sistema de ficheros utilizados : Fichero de objetos binario (ObjectInputStream/ObjectOutputStream)");
+                    controlador.setModelo(new JugadorDAOFObjetosBinario(nombreCarpeta,ruta));
                     break;
                 case 4:
-                    System.out.println("Ha seleccionado: Fichero de acceso aleatorio binario (RandomAccessFile)");
-                    controlador.setModelo(new JugadorDAOFAccesoAleatorioBinario());
-                    controlador.getModelo().setNOMBRE_DIRECTORIO(controlador.getNombreCarpeta());
+                    System.out.println("Cargando desde el fichero de configuracion el ultimo sistema de ficheros utilizados : Fichero de acceso aleatorio binario (RandomAccessFile)");
+                    controlador.setModelo(new JugadorDAOFAccesoAleatorioBinario(nombreCarpeta,ruta));
                     break;
                 case 5:
-                    System.out.println("Ha seleccionado: Fichero de texto XML (DOM)");
-                    controlador.setModelo(new JugadorDAOFXML());
-                    controlador.getModelo().setNOMBRE_DIRECTORIO(controlador.getNombreCarpeta());
-                    break;
-                case 6:
-                    if(menuInicial){
-                    }else{
-                        System.out.println("Saliendo del programa...");
-                        System.exit(0);
-                    }
-                    break;
-                default:
-                    System.out.println("Opción no válida. Intente de nuevo.");
+                    System.out.println("Cargando desde el fichero de configuracion el ultimo sistema de ficheros utilizados : Fichero de texto XML (DOM)");
+                    controlador.setModelo(new JugadorDAOFXML(nombreCarpeta,ruta));
                     break;
             }
-            System.out.println();
-        } while (opcion <1 || opcion >6);
+        }
     }
 
     @Override

@@ -16,13 +16,26 @@ import java.util.List;
 
 public class JugadorDAOFXML implements IDAO<Jugador>{
 
-    private static final String NOMBRE_DIRECTORIO = "Ficheros";
+    public JugadorDAOFXML(String nombreDirectorio, String ruta){
+        NOMBRE_DIRECTORIO = nombreDirectorio;
+
+        if(ruta == null || ruta.equals("")){
+            directorio = new File(NOMBRE_DIRECTORIO);
+        }else{
+            directorio = new File(ruta, NOMBRE_DIRECTORIO);
+        }
+        if(!directorio.isDirectory()){
+            directorio.mkdir();
+        }
+        archivo = new File(directorio, NOMBRE_ARCHIVO);
+    }
+    private String NOMBRE_DIRECTORIO;
     private static final String NOMBRE_ARCHIVO = "FicheroXML.xml";
 
     List<Jugador> listaJugadores = new ArrayList<>();
 
-    File directorio = new File(NOMBRE_DIRECTORIO);
-    File archivo = new File(directorio, NOMBRE_ARCHIVO);
+    File directorio;
+    File archivo;
 
     @Override
     public String alta(Jugador o) {
@@ -197,10 +210,6 @@ public class JugadorDAOFXML implements IDAO<Jugador>{
         }
     }
 
-    @Override
-    public void setNOMBRE_DIRECTORIO(String o) {
-
-    }
 
     private Document obtenerDocumento() throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();

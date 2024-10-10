@@ -1,20 +1,38 @@
 package configuracion;
 
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Properties;
 
 public class ActualizarConfiguracion {
+    Properties config = new Properties();
 
-    public static void main(String[] args) {
-        // Crear una instancia de Properties
-        Properties config = new Properties();
+    public ActualizarConfiguracion(){
+        LecturaConfiguracion lecturaConfiguracion = new LecturaConfiguracion();
+        String[] configuraciones = lecturaConfiguracion.leerConfiguracion();
+        nombreCarpetaGuardadoFicheros = configuraciones[0];
+        rutaGuardadoFicheros = configuraciones[1];
+        formatoDeArchivo = configuraciones[2];
+    }
 
+    private String nombreCarpetaGuardadoFicheros;
+    private String rutaGuardadoFicheros;
+    private String formatoDeArchivo;
+
+    public void actualizarFicheroConfiguracion() {
         try {
 
-            config.setProperty("nombrecarpetaguardadoficheros","Ficheros");
-            config.setProperty("rutaguardadoficheros","C:\\Users\\Vespertino\\Desktop");
-            config.setProperty("formatodearchivo", "");
+            config.setProperty("nombrecarpetaguardadoficheros",nombreCarpetaGuardadoFicheros);
+            config.setProperty("rutaguardadoficheros",rutaGuardadoFicheros);
+            /*
+            1 -> SecuencialTexto
+            2 -> SecuencialBinario
+            3 -> ObjetosBinario
+            4 -> AccesoAleatorioBinario
+            5 -> XML
+            */
+            config.setProperty("formatodearchivo", formatoDeArchivo);
 
             FileOutputStream output = new FileOutputStream("config.properties");
             config.store(output, "Configuración de la aplicacion");
@@ -26,4 +44,38 @@ public class ActualizarConfiguracion {
             e.printStackTrace();
         }
     }
+
+    public String getNombreCarpetaGuardadoFicheros() {
+        return nombreCarpetaGuardadoFicheros;
+    }
+
+    public void setNombreCarpetaGuardadoFicheros(String nombreCarpetaGuardadoFicheros) {
+        this.nombreCarpetaGuardadoFicheros = nombreCarpetaGuardadoFicheros;
+    }
+
+    public String getRutaGuardadoFicheros() {
+        return rutaGuardadoFicheros;
+    }
+
+    public void setRutaGuardadoFicheros(String rutaGuardadoFicheros) {
+        this.rutaGuardadoFicheros = rutaGuardadoFicheros;
+    }
+
+    public String getFormatoDeArchivo() {
+        return formatoDeArchivo;
+    }
+
+    public void setFormatoDeArchivo(String formatoDeArchivo) {
+        this.formatoDeArchivo = formatoDeArchivo;
+    }
+
+    public void actualizarSistemaArchivo(String sistema) throws IOException {
+        config.setProperty("nombrecarpetaguardadoficheros",nombreCarpetaGuardadoFicheros);
+        config.setProperty("rutaguardadoficheros",rutaGuardadoFicheros);
+        config.setProperty("formatodearchivo", formatoDeArchivo);
+        FileOutputStream output = new FileOutputStream("config.properties");
+        config.store(output, "Configuración de la aplicacion");
+        output.close();
+    }
+
 }

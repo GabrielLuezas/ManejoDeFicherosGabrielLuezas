@@ -11,7 +11,7 @@ public class Controlador {
 
     private String nombreCarpeta;
     private String rutaFichero;
-    private String sistemaFicheros;
+    private int sistemaFicheros;
 
 
     public Controlador(IVista vista) {
@@ -56,7 +56,11 @@ public class Controlador {
     public void aplicarConfiguraciones(String[] configuraciones){
         setNombreCarpeta(configuraciones[0]);
         setRutaFichero(configuraciones[1]);
-        setSistemaFicheros(configuraciones[2]);
+        if(configuraciones[2].isEmpty()){
+            setSistemaFicheros(0);
+        }else{
+            setSistemaFicheros(Integer.parseInt(configuraciones[2]));
+        }
     }
 
 
@@ -76,11 +80,11 @@ public class Controlador {
         this.rutaFichero = rutaFichero;
     }
 
-    public String getSistemaFicheros() {
+    public int getSistemaFicheros() {
         return sistemaFicheros;
     }
 
-    public void setSistemaFicheros(String sistemaFicheros) {
+    public void setSistemaFicheros(int sistemaFicheros) {
         this.sistemaFicheros = sistemaFicheros;
     }
 }

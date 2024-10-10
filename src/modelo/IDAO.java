@@ -9,6 +9,5 @@ public interface IDAO<T> {
     public abstract String modificar (T nuevo);
     public abstract String listadoPorId (T o);
     public abstract String listadoGeneral ();
-    public abstract void setNOMBRE_DIRECTORIO (String o);
 
 }

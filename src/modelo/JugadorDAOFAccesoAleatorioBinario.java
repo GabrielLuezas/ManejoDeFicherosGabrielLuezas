@@ -8,14 +8,22 @@ import java.util.List;
 
 public class JugadorDAOFAccesoAleatorioBinario implements IDAO<Jugador>{
 
+    public JugadorDAOFAccesoAleatorioBinario(String nombreDirectorio, String ruta){
+        NOMBRE_DIRECTORIO = nombreDirectorio;
+        directorio = new File(ruta, NOMBRE_DIRECTORIO);
+        if(!directorio.isDirectory()){
+            directorio.mkdir();
+        }
+        archivo = new File(directorio, NOMBRE_ARCHIVO);
 
-    private String NOMBRE_DIRECTORIO = "Ficheros";
+    }
     private static final String NOMBRE_ARCHIVO = "FicheroAccesoAleatorioBinario.dat";
 
+    private String NOMBRE_DIRECTORIO;
+    File directorio;
+    File archivo;
     List<Jugador> listaJugadores = new ArrayList<>();
 
-    File directorio = new File(NOMBRE_DIRECTORIO);
-    File archivo = new File(directorio, NOMBRE_ARCHIVO);
 
     @Override
     public String alta(Jugador o) {
@@ -186,10 +194,6 @@ public class JugadorDAOFAccesoAleatorioBinario implements IDAO<Jugador>{
         }
     }
 
-    @Override
-    public void setNOMBRE_DIRECTORIO(String o) {
-
-    }
 
     public List<Jugador> leerJugadores() {
         List<Jugador> listaJugadores = new ArrayList<>();

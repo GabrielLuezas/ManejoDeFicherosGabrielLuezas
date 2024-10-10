@@ -12,7 +12,12 @@ public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
 
     public JugadorDAOFSecuencialTexto(String nombreDirectorio, String ruta){
         NOMBRE_DIRECTORIO = nombreDirectorio;
-        directorio = new File(ruta, NOMBRE_DIRECTORIO);
+
+        if(ruta == null || ruta.equals("")){
+            directorio = new File(NOMBRE_DIRECTORIO);
+        }else{
+            directorio = new File(ruta, NOMBRE_DIRECTORIO);
+        }
         if(!directorio.isDirectory()){
             directorio.mkdir();
         }
@@ -232,10 +237,6 @@ public class JugadorDAOFSecuencialTexto implements IDAO<Jugador> {
         }
     }
 
-    @Override
-    public void setNOMBRE_DIRECTORIO(String o) {
-        NOMBRE_DIRECTORIO = o;
-    }
 
     private List<Jugador> leerJugadores() {
         List<Jugador> listaJugadores = new ArrayList<>();
