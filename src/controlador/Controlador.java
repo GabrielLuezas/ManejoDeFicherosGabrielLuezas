@@ -26,7 +26,16 @@ public class Controlador {
         return dao;
     }
 
-
+    /**
+     * Ejecuta una operación en función del número de operación proporcionado.
+     * Las operaciones son las siguientes:
+     *   1: Alta de un jugador.
+     *   2: Baja de un jugador.
+     *   3: Modificar un jugador.
+     *   4: Buscar jugador por ID.
+     *   5: Listado general de jugadores.
+     * @param op La opción de operación que se va a ejecutar.
+     */
     public void operacion(int op){
         Jugador aux;
         switch (op){
@@ -52,7 +61,14 @@ public class Controlador {
         }
 
     }
-
+    /**
+     * Aplica las configuraciones proporcionadas para actualizar los parámetros del sistema de archivos.
+     * @param configuraciones Un array de cadenas que contiene las configuraciones:
+     *   Nombre de la carpeta de guardado.
+     *   Ruta del fichero.
+     *   Sistema de archivos utilizado.
+     *
+     */
     public void aplicarConfiguraciones(String[] configuraciones){
         setNombreCarpeta(configuraciones[0]);
         setRutaFichero(configuraciones[1]);

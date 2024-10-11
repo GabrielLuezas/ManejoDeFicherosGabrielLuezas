@@ -57,7 +57,14 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
             throw new RuntimeException(ex);
         }
     }
-
+    /**
+     * Obtiene el siguiente ID disponible para un jugador en la lista.
+     * Este método revisa la lista de jugadores para encontrar el primer ID no ocupado,
+     * comenzando desde 0. Si no hay jugadores en la lista, devuelve 0. Si la lista no está vacía,
+     * busca el primer número entero no utilizado como ID.
+     * @param jugadores La lista de jugadores existentes en el sistema.
+     * @return El siguiente ID disponible que no está ocupado por ningún jugador.
+     */
     private int getNextIdDisponible(List<Jugador> jugadores) {
         if (jugadores.isEmpty()) {
             return 0;
@@ -231,6 +238,15 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
         }
     }
 
+    /**
+     * Lee una lista de jugadores desde un archivo utilizando un DataInputStream.
+     * Este método verifica si el archivo existe y, si es así, intenta leer una lista de
+     * objetos Jugador desde el archivo. Después de la lectura, la lista de jugadores
+     * se ordena en función del ID de cada jugador. Si el archivo no existe, el método
+     * devuelve null. Si se produce una excepción durante la lectura, se imprime
+     * la traza de la excepción y se devuelve la lista de jugadores leída hasta ese momento.
+     * @return Una lista de jugadores leída desde el archivo, o  null si el archivo no existe.
+     */
     public List<Jugador> leerJugadores() {
         List<Jugador> listaJugadores = new ArrayList<>();
         if (archivo.exists()) {
@@ -246,7 +262,6 @@ public class JugadorDAOFSecuenciaBinario implements IDAO<Jugador> {
                     listaJugadores.add(jugador);
                 }
             } catch (EOFException e) {
-                // Manejar EOFException de manera silenciosa, ya que es normal al final del archivo
             } catch (IOException e) {
                 e.printStackTrace();
             }

@@ -79,7 +79,14 @@ public class JugadorDAOFXML implements IDAO<Jugador>{
             return "Error al añadir jugador";
         }
     }
-
+    /**
+     * Obtiene el siguiente ID disponible para un jugador en la lista.
+     * Este método revisa la lista de jugadores para encontrar el primer ID no ocupado,
+     * comenzando desde 0. Si no hay jugadores en la lista, devuelve 0. Si la lista no está vacía,
+     * busca el primer número entero no utilizado como ID.
+     * @param jugadores La lista de jugadores existentes en el sistema.
+     * @return El siguiente ID disponible que no está ocupado por ningún jugador.
+     */
     private int getNextIdDisponible(List<Jugador> jugadores) {
         if (jugadores.isEmpty()) {
             return 0;
@@ -210,7 +217,15 @@ public class JugadorDAOFXML implements IDAO<Jugador>{
         }
     }
 
-
+    /**
+     * Obtiene un objeto Document que representa el contenido del archivo XML.
+     * Si el archivo existe, se analiza y se carga su contenido en un objeto Document.
+     * Si el archivo no existe, se crea un nuevo documento XML con un elemento raíz "jugadores".
+     *
+     * @return Un objeto Document que contiene el contenido del archivo XML o un nuevo documento
+     *         si el archivo no existía.
+     * @throws Exception Si ocurre un error durante la lectura o el análisis del archivo XML.
+     */
     private Document obtenerDocumento() throws Exception {
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -227,6 +242,13 @@ public class JugadorDAOFXML implements IDAO<Jugador>{
         return document;
     }
 
+    /**
+     * Guarda los cambios realizados en un objeto Document en el archivo XML correspondiente.
+     * Este método transforma el objeto Document en un formato XML y lo escribe en el archivo.
+     *
+     * @param document El objeto Document que contiene los cambios que se desean guardar.
+     * @throws TransformerException Si ocurre un error durante el proceso de transformación o escritura del documento en el archivo XML.
+     */
     private void guardarCambios(Document document) throws TransformerException {
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
         Transformer transformer = transformerFactory.newTransformer();
@@ -235,7 +257,14 @@ public class JugadorDAOFXML implements IDAO<Jugador>{
         transformer.transform(source, result);
     }
 
-
+    /**
+     * Lee los datos de los jugadores desde un archivo XML y devuelve una lista de objetos Jugador.
+     * Este método obtiene un objeto Document utilizando el método obtenerDocumento(),
+     * luego extrae los elementos "jugador" y sus datos (ID, nick, nivel de experiencia, vida y monedas)
+     * para crear objetos Jugador. La lista se ordena por el ID del jugador antes de devolverla.
+     *
+     * @return Una lista de objetos Jugador leídos del archivo XML, o una lista vacía si ocurre un error durante la lectura.
+     */
     public List<Jugador> leerJugadores() {
         List<Jugador> listaJugadores = new ArrayList<>();
 

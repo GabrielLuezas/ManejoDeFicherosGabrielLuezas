@@ -4,6 +4,7 @@ import configuracion.ActualizarConfiguracion;
 import controlador.Controlador;
 import modelo.*;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class VConsola implements IVista<Jugador>{
@@ -37,15 +38,27 @@ public class VConsola implements IVista<Jugador>{
         iniciarUI();
     }
 
+    /**
+     * Método para iniciar la interfaz de usuario en consola.
+     * Despliega el menu de seleccion de sistema de archivos siempre que
+     * el config.properties no tenga ninguno guardado
+     */
     private void iniciarUI() {
-        int op;
-        if(controlador.getModelo()==null){
+        int op = 0;
+        if (controlador.getModelo() == null) {
             desplegarEleccionDeArchivos();
-            menuInicial=true;
+            menuInicial = true;
         }
         do {
             desplegarMenu();
-            op = scanner.nextInt();
+            try {
+                op = scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println("Entrada inválida. Por favor, introduce un número del 1 al 7.");
+                scanner.next();
+                continue;
+            }
+
             switch (op) {
                 case 1 -> {
                     jugadorAuxiliar = new Jugador();
@@ -66,20 +79,26 @@ public class VConsola implements IVista<Jugador>{
                 case 5 -> {
                     controlador.operacion(5);
                 }
-                case 6 ->
-                        desplegarEleccionDeArchivos();
+                case 6 -> {
+                    desplegarEleccionDeArchivos();
+                }
                 case 7 -> {
                     System.out.println("Saliendo del programa...");
                     actConfiguracion.setFormatoDeArchivo(saberTipoModelo());
                     actConfiguracion.actualizarFicheroConfiguracion();
                     System.exit(0);
                 }
-                default ->
-                        System.out.println("Introduce una entrada valida (del 1 al 7).");
+                default -> {
+                    System.out.println("Introduce una entrada válida (del 1 al 7).");
+                }
             }
-        } while (op!=7);
+        } while (op != 7);
     }
-
+    /**
+     * Método que devuelve el tipo de almacenamiento del modelo actual.
+     *
+     * @return Un valor en forma de cadena que representa el tipo de modelo de datos.
+     */
     private String saberTipoModelo() {
         String respuesta;
         if(controlador.getModelo() instanceof JugadorDAOFSecuencialTexto){
@@ -96,65 +115,215 @@ public class VConsola implements IVista<Jugador>{
         return respuesta;
     }
 
+    /**
+     * Método para consultar los datos de un jugador por su ID.
+     * Solicita el ID del jugador y lo envía al controlador para su consulta.
+     */
     private void eventosConsultarPorNumPokedex() {
         System.out.println("========= Consulta de un jugador por ID =========");
 
-        System.out.print("Introduce el id del jugador para ver sus datos:");
-        jugadorAuxiliar.setIdJugador(scanner.nextInt());
+        boolean entradaValida = false;
+        int idJugador = 0;
+
+        while (!entradaValida) {
+            System.out.print("Introduce el id del jugador para ver sus datos: ");
+            try {
+                idJugador = scanner.nextInt();
+                if (idJugador < 0) {
+                    System.out.println("El ID no puede ser negativo. Inténtalo de nuevo.");
+                    continue;
+                }
+                jugadorAuxiliar.setIdJugador(idJugador);
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Por favor, introduce un número válido.");
+                scanner.next();
+            }
+        }
 
         controlador.operacion(4);
     }
 
+    /**
+     * Método para modificar los datos de un jugador.
+     * Solicita el ID del jugador a modificar, y luego permite al usuario ingresar los nuevos datos.
+     */
     private void eventosModificar() {
         System.out.println("========= Modificación de un Jugador =========");
 
-        System.out.print("Introduce el id del jugador que quieres modificar:");
+        boolean entradaValida = false;
+        int idJugador = 0;
 
-        jugadorAuxiliar.setIdJugador(scanner.nextInt());
+        while (!entradaValida) {
+            System.out.print("Introduce el id del jugador que quieres modificar: ");
+            try {
+                idJugador = scanner.nextInt();
+                if (idJugador < 0) {
+                    System.out.println("El ID no puede ser negativo. Inténtalo de nuevo.");
+                    continue;
+                }
+                jugadorAuxiliar.setIdJugador(idJugador);
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Por favor, introduce un número válido.");
+                scanner.next();
+            }
+        }
         scanner.nextLine();
 
-        System.out.print("Introduce el nuevo nombre del jugador con el id " + jugadorAuxiliar.getIdJugador() + ":");
+        System.out.print("Introduce el nuevo nombre del jugador con el id " + jugadorAuxiliar.getIdJugador() + ": ");
         jugadorAuxiliar.setNick(scanner.nextLine());
 
-        System.out.print("Introduce el nuevo nivel de experiencia del jugador con el id " + jugadorAuxiliar.getIdJugador()+ ":");
-        jugadorAuxiliar.setNivelExperencia(scanner.nextInt());
+        entradaValida = false;
+        while (!entradaValida) {
+            System.out.print("Introduce el nuevo nivel de experiencia del jugador con el id " + jugadorAuxiliar.getIdJugador() + ": ");
+            try {
+                int nivelExperiencia = scanner.nextInt();
+                if (nivelExperiencia < 0) {
+                    System.out.println("El nivel de experiencia no puede ser negativo. Inténtalo de nuevo.");
+                    continue;
+                }
+                jugadorAuxiliar.setNivelExperencia(nivelExperiencia);
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Por favor, introduce un número válido.");
+                scanner.next();
+            }
+        }
 
-        System.out.print("Introduce los nuevos puntos de vida del jugador con el id " + jugadorAuxiliar.getIdJugador()+ ":");
-        jugadorAuxiliar.setVidaJugador(scanner.nextInt());
+        entradaValida = false;
+        while (!entradaValida) {
+            System.out.print("Introduce los nuevos puntos de vida del jugador con el id " + jugadorAuxiliar.getIdJugador() + ": ");
+            try {
+                int puntosVida = scanner.nextInt();
+                if (puntosVida < 0) {
+                    System.out.println("Los puntos de vida no pueden ser negativos. Inténtalo de nuevo.");
+                    continue;
+                }
+                jugadorAuxiliar.setVidaJugador(puntosVida);
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Por favor, introduce un número válido.");
+                scanner.next();
+            }
+        }
 
-        System.out.print("Introduce el nuevo numero de monedas del jugador con el id " + jugadorAuxiliar.getIdJugador()+ ":");
-        jugadorAuxiliar.setMonedas(scanner.nextInt());
+        entradaValida = false;
+        while (!entradaValida) {
+            System.out.print("Introduce el nuevo número de monedas del jugador con el id " + jugadorAuxiliar.getIdJugador() + ": ");
+            try {
+                int monedas = scanner.nextInt();
+                if (monedas < 0) {
+                    System.out.println("El número de monedas no puede ser negativo. Inténtalo de nuevo.");
+                    continue;
+                }
+                jugadorAuxiliar.setMonedas(monedas);
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Por favor, introduce un número válido.");
+                scanner.next();
+            }
+        }
 
         controlador.operacion(3);
-
     }
 
+    /**
+     * Método para eliminar un jugador.
+     * Solicita el ID del jugador y lo envía al controlador para su eliminación.
+     */
     private void eventosBorrar() {
         System.out.println("========= Borrado de un Jugador =========");
 
-        System.out.print("Introduce el id del jugador que quieres borrar: ");
-        jugadorAuxiliar.setIdJugador(scanner.nextInt());
+        boolean entradaValida = false;
+        int idJugador = 0;
+
+        while (!entradaValida) {
+            System.out.print("Introduce el id del jugador que quieres borrar: ");
+            try {
+                idJugador = scanner.nextInt();
+                if (idJugador < 0) {
+                    System.out.println("El ID no puede ser negativo. Inténtalo de nuevo.");
+                    continue;
+                }
+                jugadorAuxiliar.setIdJugador(idJugador);
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Por favor, introduce un número válido.");
+                scanner.next();
+            }
+        }
+
         controlador.operacion(2);
     }
 
+    /**
+     * Método para insertar un nuevo jugador.
+     * Solicita los datos del jugador y los envía al controlador para su inserción.
+     */
     private void eventosInsertar() {
         System.out.println("========= Insertar Jugador =========");
         scanner.nextLine();
 
         System.out.print("Nick: ");
         jugadorAuxiliar.setNick(scanner.nextLine());
-
-        System.out.print("Nivel de Experiencia: ");
-        jugadorAuxiliar.setNivelExperencia(scanner.nextInt());
-
-        System.out.print("Puntos de vida: ");
-        jugadorAuxiliar.setVidaJugador(scanner.nextInt());
-        System.out.print("Monedas: ");
-        jugadorAuxiliar.setMonedas(scanner.nextInt());
-
+        int nivelExperiencia = 0;
+        boolean entradaValida = false;
+        while (!entradaValida) {
+            System.out.print("Nivel de Experiencia: ");
+            try {
+                nivelExperiencia = scanner.nextInt();
+                if (nivelExperiencia < 0) {
+                    System.out.println("El nivel de experiencia no puede ser negativo.");
+                    continue;
+                }
+                jugadorAuxiliar.setNivelExperencia(nivelExperiencia);
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Por favor, introduce un número válido.");
+                scanner.next();
+            }
+        }
+        int puntosVida = 0;
+        entradaValida = false;
+        while (!entradaValida) {
+            System.out.print("Puntos de vida: ");
+            try {
+                puntosVida = scanner.nextInt();
+                if (puntosVida < 0) {
+                    System.out.println("Los puntos de vida no pueden ser negativos.");
+                    continue;
+                }
+                jugadorAuxiliar.setVidaJugador(puntosVida);
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Por favor, introduce un número válido.");
+                scanner.next();
+            }
+        }
+        int monedas = 0;
+        entradaValida = false;
+        while (!entradaValida) {
+            System.out.print("Monedas: ");
+            try {
+                monedas = scanner.nextInt();
+                if (monedas < 0) {
+                    System.out.println("Las monedas no pueden ser negativas.");
+                    continue;
+                }
+                jugadorAuxiliar.setMonedas(monedas);
+                entradaValida = true;
+            } catch (InputMismatchException e) {
+                System.out.println("Por favor, introduce un número válido.");
+                scanner.next();
+            }
+        }
         controlador.operacion(1);
     }
 
+    /**
+     * Método que despliega el menú principal con las opciones disponibles para el usuario.
+     */
     private void desplegarMenu() {
         System.out.println("========= Menu Principal =========");
         System.out.println("Indique la operacion a realizar:");
@@ -168,8 +337,12 @@ public class VConsola implements IVista<Jugador>{
         System.out.print("Ingrese su opcion: ");
     }
 
+    /**
+     * Método para desplegar el menú inicial donde el usuario puede elegir
+     * el archivo de datos con el cual trabajar.
+     */
     private void desplegarEleccionDeArchivos() {
-        int opcion;
+        int opcion=0;
         String nombreCarpeta = controlador.getNombreCarpeta();;
         String ruta = controlador.getRutaFichero();
         int sistemaFichero = controlador.getSistemaFicheros();
@@ -185,7 +358,14 @@ public class VConsola implements IVista<Jugador>{
                 System.out.println("6. Salir");
 
                 System.out.print("Ingrese su opción: ");
-                opcion = scanner.nextInt();
+
+                try {
+                    opcion = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("Entrada inválida. Por favor, introduce un número del 1 al 6.");
+                    scanner.next();
+                    continue;
+                }
 
                 nombreCarpeta = controlador.getNombreCarpeta();
                 ruta = controlador.getRutaFichero();

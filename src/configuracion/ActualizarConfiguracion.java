@@ -20,6 +20,10 @@ public class ActualizarConfiguracion {
     private String rutaGuardadoFicheros;
     private String formatoDeArchivo;
 
+    /**
+     * Actualiza el archivo de configuración con los valores actuales de las propiedades.
+     * Guarda las propiedades de nombre de carpeta, ruta de guardado y formato de archivo.
+     */
     public void actualizarFicheroConfiguracion() {
         try {
 
@@ -69,6 +73,11 @@ public class ActualizarConfiguracion {
         this.formatoDeArchivo = formatoDeArchivo;
     }
 
+    /**
+     * Actualiza el archivo de configuración con el nuevo sistema de archivo y las propiedades actuales.
+     * @param sistema El nuevo sistema de archivo en uso (como cadena).
+     * @throws IOException Si ocurre un error al escribir en el archivo.
+     */
     public void actualizarSistemaArchivo(String sistema) throws IOException {
         config.setProperty("nombrecarpetaguardadoficheros",nombreCarpetaGuardadoFicheros);
         config.setProperty("rutaguardadoficheros",rutaGuardadoFicheros);
