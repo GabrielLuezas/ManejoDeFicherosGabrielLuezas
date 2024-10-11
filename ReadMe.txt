@@ -1,5 +1,7 @@
 Cosas a tener en cuenta de la aplicación
 
+-A la hora de importar el proyecto, recomiendo hacerlo en intelij ya que yo lo he subido y cargado desde inteliJ, desde netbeans da problemas
+
 -Fichero de configuración:
 
 El fichero de configuración contiene 3 líneas :
