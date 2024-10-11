@@ -1,6 +1,6 @@
-#Cosas a tener en cuenta de la aplicación
+Cosas a tener en cuenta de la aplicación
 
-#-Fichero de configuración:
+-Fichero de configuración:
 
 El fichero de configuración contiene 3 líneas :
 
@@ -10,7 +10,7 @@ nombrecarpetaguardadoficheros - Nombre de la carpeta (Recomendable no poner espa
 
 rutaguardadoficheros - Ruta donde se va a guardar la carpeta (A la hora de ponerla si la copias y la pegas poner doble \\, Ejemplo: C\:\\Users\\User\\Desktop)
 
-#-Propia Aplicación:
+-Propia Aplicación:
 
 Cuando arranques la aplicación si no has tocado el fichero de configuración por defecto la carpeta se llamara Ficheros y se guardara en la carpeta del proyecto (A la altura de src)
 
